@@ -9,22 +9,61 @@ print(" ADVANCED ANALYTICS DEMO")
 print("==============================\n")
 
 
-# Sample dataset
+# -------------------------------------------------
+# Sample dataset with required columns
+# -------------------------------------------------
 records = [
-    {
-        "Reservation_ID": "RES-001",
-        "Vehicle_ID": "CAR-01",
-        "Pickup_TS": "2026-03-10 10:00",
-        "Return_TS": "2026-03-10 18:00",
-        "Odo_Start": 50000,
-        "Odo_End": 50200,
-        "Fuel_Level": 50,
-        "Rate": 1500,
-        "City": "Bangalore",
-        "Payment": "UPI",
-        "Rental_Hours": 8,
-        "Revenue": 1500,
-    }
+{
+"Reservation_ID":"RES-001",
+"Vehicle_ID":"CAR-01",
+"Vehicle_Class": "SUV", 
+"Driver_License":"DL12345",
+"Pickup_TS":"2026-03-10 10:00",
+"Return_TS":"2026-03-10 18:30",
+"Booking_TS":"2026-03-09 09:00",
+
+    "Pickup_Lat": 12.9716,
+    "Pickup_Lon": 77.5946,
+    "Drop_Lat": 12.9352,
+    "Drop_Lon": 77.6245,
+"Odo_Start":50000,
+"Odo_End":50200,
+"Fuel_Level":50,
+"Rate":1500,
+"City":"Bangalore",
+"Payment":"UPI",
+"Rental_Hours":8,
+"Revenue":1500,
+"Harsh_Events":2,
+"Max_Speed_kmh":110,
+"Damage_Flag":0
+},
+
+{
+"Reservation_ID":"RES-002",
+"Vehicle_ID":"CAR-02",
+"Vehicle_Class": "Luxury", 
+"Driver_License":"DL12345",
+"Pickup_TS":"2026-04-02 09:00",
+"Return_TS":"2026-04-02 17:00",
+"Booking_TS":"2026-04-01 10:00",
+
+    "Pickup_Lat": 13.9716,
+    "Pickup_Lon": 71.5946,
+    "Drop_Lat": 22.9352,
+    "Drop_Lon": 79.6245,
+"Odo_Start":30000,
+"Odo_End":30250,
+"Fuel_Level":60,
+"Rate":1200,
+"City":"Bangalore",
+"Payment":"Card",
+"Rental_Hours":8,
+"Revenue":1200,
+"Harsh_Events":1,
+"Max_Speed_kmh":100,
+"Damage_Flag":0
+}
 ]
 
 df = pd.DataFrame(records)
@@ -33,163 +72,111 @@ engine = AnalyticalEngine(df)
 
 
 # -------------------------------------------------
-# Scenario 1
-# -------------------------------------------------
-print("1. Utilization calculation")
+print("1️⃣ Utilization calculation")
 print(engine.compute_utilization())
 print()
 
-
 # -------------------------------------------------
-# Scenario 2
-# -------------------------------------------------
-print("2. RevPAC calculation")
+print("2️⃣ RevPAC calculation")
 print(engine.compute_revpac())
 print()
 
-
 # -------------------------------------------------
-# Scenario 3
-# -------------------------------------------------
-print("3. Distance & Cost per km")
+print("3️⃣ Distance & Cost per km")
 print(engine.compute_distance_cost())
 print()
 
-
 # -------------------------------------------------
-# Scenario 4
-# -------------------------------------------------
-print("4. Idle time calculation")
+print("4️⃣ Idle time calculation")
 print(engine.compute_idle_time())
 print()
 
-
 # -------------------------------------------------
-# Scenario 5
-# -------------------------------------------------
-print("5. Dynamic pricing features")
+print("5️⃣ Dynamic pricing features")
 print(engine.dynamic_pricing_features())
 print()
 
-
 # -------------------------------------------------
-# Scenario 6
-# -------------------------------------------------
-print("6. Fuel efficiency estimation")
+print("6️⃣ Fuel efficiency estimation")
 print(engine.fuel_efficiency())
 print()
 
-
 # -------------------------------------------------
-# Scenario 7
-# -------------------------------------------------
-print("7. Damage rate calculation")
+print("7️⃣ Damage rate calculation")
 print(engine.damage_rate())
 print()
 
+print("Damage incidence KPI:")
+damage_rate = engine.damage_incidence_rate()
+print(f"Damage incidents per 100 rentals: {damage_rate:.2f}")
+print()
 
 # -------------------------------------------------
-# Scenario 8
-# -------------------------------------------------
-print("8. Cohort retention tagging")
+print("8️⃣ Customer cohort retention tagging")
 print(engine.cohort_retention())
 print()
 
-
 # -------------------------------------------------
-# Scenario 9
-# -------------------------------------------------
-print("9. Fraud risk scoring")
+print("9️⃣ Fraud risk scoring")
 print(engine.fraud_risk())
 print()
 
-
 # -------------------------------------------------
-# Scenario 10
-# -------------------------------------------------
-print("10. Maintenance due forecast")
+print("🔟 Maintenance due forecast")
 print(engine.maintenance_due())
 print()
 
-
 # -------------------------------------------------
-# Scenario 11
-# -------------------------------------------------
-print("11. Overstay detection")
+print("11️⃣ Overstay detection & penalty")
 print(engine.overstay_detection())
 print()
 
-
 # -------------------------------------------------
-# Scenario 12
-# -------------------------------------------------
-print("12. Pickup delay stats")
-print(engine.pickup_punctuality())
+print("12️⃣ Pickup / Return punctuality stats")
+engine.pickup_punctuality()
+print(engine.df[["Pickup_Delay", "Return_Delay_Min"]])
 print()
 
-
 # -------------------------------------------------
-# Scenario 13
-# -------------------------------------------------
-print("13. Geo hotspot score")
+print("13️⃣ Geo hotspot score")
 print(engine.geo_hotspots())
 print()
 
-
 # -------------------------------------------------
-# Scenario 14
-# -------------------------------------------------
-print("14. Upsell opportunity flags")
+print("14️⃣ Upsell opportunity flags")
 print(engine.upsell_flags())
 print()
 
-
 # -------------------------------------------------
-# Scenario 15
-# -------------------------------------------------
-print("15. Cancellation simulation")
+print("15️⃣ Cancellation rate simulation")
 print(engine.cancellation_rate())
 print()
 
-
 # -------------------------------------------------
-# Scenario 16
-# -------------------------------------------------
-print("16. Driver behavior score")
+print("16️⃣ Driver behavior score")
 print(engine.driver_behavior())
 print()
 
-
 # -------------------------------------------------
-# Scenario 17
-# -------------------------------------------------
-print("17. Vehicle mix optimization")
+print("17️⃣ Vehicle class mix optimization")
 print(engine.vehicle_mix())
 print()
 
-
 # -------------------------------------------------
-# Scenario 18
-# -------------------------------------------------
-print("18. Lead time price elasticity")
+print("18️⃣ Lead time price elasticity features")
 print(engine.price_elasticity())
 print()
 
-
 # -------------------------------------------------
-# Scenario 19
-# -------------------------------------------------
-print("19. Fleet health score")
+print("19️⃣ Fleet health score")
 print(engine.fleet_health())
 print()
 
-
 # -------------------------------------------------
-# Scenario 20
-# -------------------------------------------------
-print("20. Churn risk prediction")
+print("20️⃣ Churn likelihood prediction")
 print(engine.churn_prediction())
 print()
 
-
-print("ANALYTICS DEMO COMPLETE")
+print("====================================")
+print(" ALL 20 ANALYTICS SCENARIOS COMPLETE")
+print("====================================")

@@ -32,10 +32,19 @@ from src.analytics.analytics_engine import AnalyticalEngine
 
 # Output field order for cleaned reservations
 CLEANED_FIELDS = [
-    "Reservation_ID", "Vehicle_ID", "Pickup_TS", "Return_TS",
+    "Reservation_ID", "Vehicle_ID", 
+    "Vehicle_Class","Booking_TS",
+    "Pickup_TS", "Return_TS",
+
+    # GEO FIELDS
+    "Pickup_Lat", "Pickup_Lon",
+    "Drop_Lat", "Drop_Lon",
+
     "Odo_Start", "Odo_End", "Fuel_Level", "Rate", "City", "Payment",
     "Fraud_Risk_Score", "Fraud_Risk_Level",
     "Distance_km", "Rental_Hours", "Revenue", "Cost_per_km",
+
+
 
      # Advanced analytics fields
     "Utilization",
@@ -134,6 +143,8 @@ def run_pipeline(project_root=None):
     engine = AnalyticalEngine(df)
 
     analytics_df = engine.run_all()
+
+    print("Damage incidence per 100 rentals:", engine.damage_incidence_rate())
 
     # Save analytics output
     analytics_df.to_csv("data/output/analytics_output.csv", index=False)

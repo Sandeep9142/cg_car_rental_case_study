@@ -567,6 +567,15 @@ CITY_VARIANTS = {
 "Kolkata":["Kolkata","kolkata"]
 }
 
+CITY_COORDS = {
+    "Bengaluru": (12.9716, 77.5946),
+    "Mumbai": (19.0760, 72.8777),
+    "Delhi": (28.7041, 77.1025),
+    "Hyderabad": (17.3850, 78.4867),
+    "Chennai": (13.0827, 80.2707),
+    "Kolkata": (22.5726, 88.3639)
+}
+
 PAYMENT_VARIANTS = ["UPI","upi","Card","card","cash","wallet"]
 
 BASE_DATE = datetime(2026,1,1)
@@ -666,6 +675,17 @@ def generate_reservations(n=2000):
 
         booking_ts=(pickup_dt-timedelta(hours=random.randint(1,72))).strftime("%Y-%m-%d %H:%M")
 
+        city_key = random.choice(CITIES)
+        city_name = random.choice(CITY_VARIANTS[city_key])
+
+        lat, lon = CITY_COORDS[city_key]
+
+        pickup_lat = lat + random.uniform(-0.02, 0.02)
+        pickup_lon = lon + random.uniform(-0.02, 0.02)
+
+        drop_lat = lat + random.uniform(-0.02, 0.02)
+        drop_lon = lon + random.uniform(-0.02, 0.02)
+
         rows.append({
 
         "Reservation_ID":res_id,
@@ -678,7 +698,14 @@ def generate_reservations(n=2000):
         "Pickup_TS":pickup,
         "Return_TS":return_ts,
 
-        "City":random.choice(CITY_VARIANTS[random.choice(CITIES)]),
+        "City":city_name,
+
+        # NEW GEO COLUMNS
+        "Pickup_Lat":round(pickup_lat,6),
+        "Pickup_Lon":round(pickup_lon,6),
+        "Drop_Lat":round(drop_lat,6),
+        "Drop_Lon":round(drop_lon,6),
+
 
         "Payment":random.choice(PAYMENT_VARIANTS)
 
