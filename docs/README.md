@@ -1,84 +1,252 @@
-# Car Rental Data Cleaning & Transformation Case Study
+# 🚗 Car Rental Data Engineering Pipeline
 
-## Overview
-A multi-city car rental company collects data from multiple systems (reservation, telematics, maintenance, payments, feedback). This project implements a complete data engineering pipeline that:
+## 📌 Overview
+This project implements a **complete end-to-end data engineering pipeline** for a **multi-city car rental company**.  
+The system simulates real-world messy operational data and transforms it into **clean, validated, analytics-ready datasets**.
 
-1. **Generates** a realistic messy dataset (~2000 records)
-2. **Cleans** and normalizes all data fields
-3. **Validates** records against business rules
-4. **Deduplicates** reservations and detects fraud
-5. **Transforms** data into analytics-ready KPIs
-6. **Provides** SQL analytics for advanced querying
+The pipeline performs the following major operations:
 
-## Project Structure
+1. **Synthetic Data Generation** with real-world data issues
+2. **Data Ingestion** from raw CSV files
+3. **Data Cleaning & Normalization**
+4. **Business Rule Validation**
+5. **Deduplication & Fraud Detection**
+6. **Advanced Data Transformations**
+7. **KPI & Analytics Generation**
+8. **SQL-based Analytical Queries**
+
+The system processes **~2000+ rental reservations** and converts messy operational data into **reliable business intelligence metrics**.
+
+---
+
+# 🏗 System Architecture
+
 ```
 car_rental_project/
-├── main.py                          # Entry point - run this
+│
+├── main.py
+│
 ├── data/
-│   ├── raw/car_rental_raw.csv       # Generated messy dataset
+│   ├── raw/
+│   │   └── car_rental_raw.csv
+│   │
 │   └── output/
-│       ├── cleaned_reservations.csv # Clean, enriched records
-│       ├── rejected_reservations.csv# Invalid records with reasons
-│       └── metrics_report.csv       # KPI metrics per reservation
+│       ├── cleaned_reservations.csv
+│       ├── rejected_reservations.csv
+│       ├── metrics_report.csv
+│       └── analytics_outputs/
+│
 ├── src/
+│
 │   ├── ingestion/
-│   │   ├── dataset_generator.py     # Developer 1: Data generation
-│   │   └── reader.py               # Developer 1: CSV I/O
+│   │   ├── dataset_generator.py
+│   │   └── reader.py
+│
 │   ├── cleaning/
-│   │   └── cleaner.py              # Developer 2: Data cleaning
+│   │   └── cleaner.py
+│
 │   ├── validation/
-│   │   └── validator.py            # Developer 3: Validation rules
+│   │   └── validator.py
+│
 │   ├── processing/
-│   │   └── deduplicator.py         # Developer 4: Dedup & fraud
+│   │   └── deduplicator.py
+│
 │   ├── analytics/
-│   │   └── transformer.py          # Developer 5: KPI computation
+│   │   ├── transformer.py
+│   │   └── analytics_engine.py
+│
 │   └── pipeline/
-│       └── pipeline_runner.py       # Pipeline orchestration
+│       └── pipeline_runner.py
+│
 ├── sql/
-│   ├── schema.sql                   # Developer 6: DB schema
-│   ├── inserts.sql                  # Developer 6: Sample data
-│   └── solutions.sql               # Developer 6: Analytics queries
+│   ├── schema.sql
+│   ├── inserts.sql
+│   └── solutions.sql
+│
 └── docs/
-    ├── README.md                    # This file
-    ├── architecture.md              # System architecture
-    └── evaluation_questions.md      # Q&A for evaluators
+    ├── README.md
+    ├── architecture.md
+    └── evaluation_questions.md
 ```
 
-## How to Run
+---
+
+# ⚙️ How to Run the Project
+
 ```bash
 cd car_rental_project
 python main.py
 ```
 
-No external dependencies required — uses only Python standard library.
+The pipeline will automatically:
 
-## Pipeline Stages
+1. Generate the dataset  
+2. Clean and validate data  
+3. Remove duplicates  
+4. Compute analytics metrics  
+5. Save output files  
+
+---
+
+# 📊 Pipeline Stages
 
 | Stage | Description |
-|-------|-------------|
-| 1. Generate | Creates ~2080 records with intentional data issues |
-| 2. Load | Reads raw CSV into memory |
-| 3. Clean | Normalizes Vehicle IDs, timestamps, odometers, fuel, rates, cities, payments |
-| 4. Validate | Checks timestamps, odometers, fuel ranges, payment methods |
-| 5. Deduplicate | Removes duplicates by Reservation_ID, computes fraud risk scores |
-| 6. Transform | Computes distance, duration, revenue, cost/km, fleet utilization |
-| 7. Output | Saves cleaned, rejected, and metrics CSVs |
+|------|-------------|
+| **1. Data Generation** | Generates ~2000 records with intentional data inconsistencies |
+| **2. Data Ingestion** | Loads CSV data into memory |
+| **3. Data Cleaning** | Standardizes formats across all columns |
+| **4. Validation** | Applies business rules to detect invalid records |
+| **5. Deduplication** | Removes duplicate reservations |
+| **6. Fraud Detection** | Detects suspicious reservations and assigns risk scores |
+| **7. Data Transformation** | Computes derived metrics like distance, duration, revenue |
+| **8. Analytics Engine** | Generates advanced business insights |
+| **9. Output Generation** | Writes cleaned, rejected, and metrics datasets |
 
-## Data Quality Issues Handled
-- **Vehicle_ID**: Extra spaces, case inconsistencies
-- **Timestamps**: Multiple formats, invalid minutes (e.g., 10:75)
-- **Odometer**: Text units ("45,000 km"), commas
-- **Fuel Level**: Mixed percent/fraction ("50%" vs "0.5")
-- **Rate**: Currency symbols ("₹1,500/day")
-- **City**: Abbreviations ("blr" → "Bengaluru")
-- **Payment**: Case variations ("upi" → "UPI")
-- **Duplicates**: Same Reservation_ID appearing multiple times
-- **Mileage**: Odo_End < Odo_Start (rollback)
+---
 
-## Team Structure
-- **Developer 1**: Dataset generation & ingestion
-- **Developer 2**: Data cleaning module
-- **Developer 3**: Data validation module
-- **Developer 4**: Deduplication & fraud detection
-- **Developer 5**: Analytics & KPI transformation
-- **Developer 6**: SQL analytics
+# 🧹 Data Cleaning Capabilities
+
+The pipeline handles multiple real-world data quality issues.
+
+### Vehicle Data
+- Extra spaces  
+- Case inconsistencies  
+- Incorrect ID formats  
+
+### Timestamps
+- Multiple datetime formats  
+- Invalid timestamps (e.g., `10:75`)  
+- Pickup/return order corrections  
+
+### Odometer
+- Text units (`45,000 km`)  
+- Commas  
+- Missing values  
+
+### Fuel Levels
+- Percent vs fraction (`50%` vs `0.5`)  
+- Out-of-range values  
+
+### Rate Fields
+- Currency symbols (`₹1500/day`)  
+- Mixed formats  
+
+### City Names
+- Abbreviations (`blr`, `hyd`)  
+- Case normalization  
+
+### Payment Methods
+- Case inconsistencies  
+- Invalid payment types  
+
+---
+
+# 🔍 Validation Rules
+
+Business validation checks include:
+
+- Pickup timestamp must be before return timestamp  
+- Odometer end must be greater than start  
+- Fuel levels must be between **0 and 100**  
+- Payment method must be valid  
+- Rate values must be positive  
+- Reservation IDs must be unique  
+
+Invalid records are saved in:
+
+```
+data/output/rejected_reservations.csv
+```
+
+---
+
+# 🕵️ Fraud Detection
+
+The system calculates **fraud risk scores** based on:
+
+- Suspicious mileage patterns  
+- Duplicate reservations  
+- Unrealistic trip durations  
+- Payment inconsistencies  
+- Data anomalies  
+
+Records are categorized as:
+
+- **Low Risk**
+- **Medium Risk**
+- **High Risk**
+
+---
+
+# 📈 Analytics & KPI Metrics
+
+The transformation layer computes business metrics such as:
+
+| Metric | Description |
+|------|-------------|
+| Trip Distance | Odo_End − Odo_Start |
+| Rental Duration | Total hours of rental |
+| Revenue | Rental rate × duration |
+| Cost per KM | Revenue ÷ distance |
+| Fleet Utilization | Vehicle usage efficiency |
+| City Performance | Revenue by location |
+| Payment Distribution | Usage of payment methods |
+| Vehicle Class Mix | Vehicle usage distribution |
+
+These metrics are exported to:
+
+```
+data/output/metrics_report.csv
+```
+
+---
+
+
+# 👨‍💻 Team Structure
+
+This project was developed collaboratively by **7 developers**, each responsible for a specific module.
+
+| Developer | Responsibility |
+|---------|----------------|
+| Developer 1 | Dataset generation & ingestion |
+| Developer 2 | Data cleaning module |
+| Developer 3 | Validation rules implementation |
+| Developer 4 | Deduplication logic |
+| Developer 5 | Fraud detection system |
+| Developer 6 | Data transformation & analytics |
+| Developer 7 | SQL database design & analytical queries |
+
+---
+
+# 📂 Output Files
+
+| File | Description |
+|-----|-------------|
+| `cleaned_reservations.csv` | Valid, cleaned reservations |
+| `rejected_reservations.csv` | Invalid records with rejection reason |
+| `metrics_report.csv` | Computed analytics metrics |
+| `analytics_outputs/` | Additional analytics outputs |
+
+---
+
+# 🎯 Project Objectives
+
+This project demonstrates:
+
+- Real-world **data engineering pipeline design**
+- **Data cleaning and normalization**
+- **Business rule validation**
+- **Fraud detection techniques**
+- **Analytics-ready data transformation**
+- **SQL-based analytical querying**
+- **Modular scalable architecture**
+
+---
+
+# 📌 Key Learning Outcomes
+
+- Building **production-style ETL pipelines**
+- Handling **messy real-world datasets**
+- Implementing **data validation frameworks**
+- Creating **analytics-ready datasets**
+- Designing **scalable modular architectures**
