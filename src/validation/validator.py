@@ -1,20 +1,3 @@
-"""
-Data Validation Module
-Developer 3 - Responsible for validating cleaned car rental records.
-
-Validation rules:
-- Return_TS must be after Pickup_TS
-- Odo_End must be >= Odo_Start
-- Fuel fraction must be between 0 and 1
-- Payment method must be one of: UPI, CARD, CASH, WALLET
-- Critical fields must not be None/empty
-
-Additional validations:
-- Driver license format validation
-- Promo code validation and expiry checks
-- GST computation validation
-"""
-
 from datetime import datetime
 import re
 
@@ -27,11 +10,6 @@ EXPIRED_PROMOS = {"EXPIRED20", "OFF30", "SUMMER22", "FEST21", "DIWALI22"}
 TS_FORMAT = "%Y-%m-%d %H:%M"
 
 LICENSE_PATTERN = r"^[A-Z]{2}\d{2}"
-
-
-# ---------------------------------------------------------
-# Timestamp validation
-# ---------------------------------------------------------
 
 # 8.
 
@@ -53,11 +31,6 @@ def validate_timestamps(record):
         return False, f"Return_TS ({return_ts}) not after Pickup_TS ({pickup})"
 
     return True, ""
-
-
-# ---------------------------------------------------------
-# Odometer validation
-# ---------------------------------------------------------
 
 # 10.
 
@@ -81,10 +54,6 @@ def validate_odometer(record):
     return True, ""
 
 
-# ---------------------------------------------------------
-# Fuel validation
-# ---------------------------------------------------------
-
 def validate_fuel_level(record):
 
     fuel = record.get("Fuel_Level")
@@ -103,10 +72,6 @@ def validate_fuel_level(record):
     return True, ""
 
 
-# ---------------------------------------------------------
-# Payment validation
-# ---------------------------------------------------------
-
 def validate_payment(record):
 
     payment = record.get("Payment")
@@ -119,10 +84,6 @@ def validate_payment(record):
 
     return True, ""
 
-
-# ---------------------------------------------------------
-# Required fields validation
-# ---------------------------------------------------------
 
 def validate_required_fields(record):
 
@@ -146,9 +107,7 @@ def validate_required_fields(record):
     return True, ""
 
 
-# ---------------------------------------------------------
-# Scenario 14 — Driver License validation
-# ---------------------------------------------------------
+# 14.
 
 def validate_driver_license(record):
 
@@ -161,11 +120,6 @@ def validate_driver_license(record):
         return False, f"Invalid driver license format: {dl}"
 
     return True, ""
-
-
-# ---------------------------------------------------------
-# Scenario 15 — Promo code validation
-# ---------------------------------------------------------
 
 # 15.
 
@@ -185,11 +139,6 @@ def validate_promo_code(record):
         return False, f"Invalid promo code: {promo}"
 
     return True, ""
-
-
-# ---------------------------------------------------------
-# Scenario 20 — GST validation
-# ---------------------------------------------------------
 
 # 20.
 
@@ -213,10 +162,6 @@ def validate_gst(record):
         return False, f"Incorrect GST amount ({gst_val}) expected ~{expected}"
 
     return True, ""
-
-# ---------------------------------------------------------
-# Main validation pipeline
-# ---------------------------------------------------------
 
 def validate_record(record):
 
@@ -242,18 +187,10 @@ def validate_record(record):
     return len(reasons) == 0, reasons
 
 
-# ---------------------------------------------------------
-# Validate all records
-# ---------------------------------------------------------
-
 def validate_all(records):
 
     valid = []
     rejected = []
-
-    # print("\nSample cleaned records (before validation):")
-    # for r in records[:5]:
-    #     print(r)
 
     for record in records:
 

@@ -1,20 +1,3 @@
-"""
-Analytics & KPI Transformation Module
-Developer 5 - Responsible for computing business metrics and KPIs.
-
-Computes:
-- Distance driven (km)
-- Rental duration (hours)
-- Revenue per reservation
-- Cost per km
-- Refueling event detection
-- Rate plan mapping to master tariffs
-- Fleet utilization
-- Revenue by city
-- Average rental duration
-- Vehicle usage frequency
-"""
-
 from datetime import datetime
 from collections import defaultdict
 
@@ -22,10 +5,7 @@ from collections import defaultdict
 TS_FORMAT = "%Y-%m-%d %H:%M"
 
 
-# ---------------------------------------------------------
 # SCENARIO 19 — Rate Plan Mapping
-# ---------------------------------------------------------
-
 RATE_PLAN_MAP = {
     "eco": "Economy",
     "economy": "Economy",
@@ -50,20 +30,8 @@ def map_rate_plan(record):
 
     return record
 
-
-# ---------------------------------------------------------
 # SCENARIO 11 — Refueling Detection
-# ---------------------------------------------------------
-
 def detect_refueling(record):
-    """
-    Detect refueling event.
-
-    Logic:
-    If vehicle travelled a long distance but fuel level is high,
-    it likely means refueling happened during the trip.
-    """
-
     try:
 
         distance = int(record.get("Distance_km", 0))
@@ -78,11 +46,6 @@ def detect_refueling(record):
         record["Refuel_Event"] = False
 
     return record
-
-
-# ---------------------------------------------------------
-# Per-record metrics
-# ---------------------------------------------------------
 
 def compute_record_metrics(record):
 
@@ -131,9 +94,7 @@ def compute_record_metrics(record):
     return rec
 
 
-# ---------------------------------------------------------
 # Fleet Utilization
-# ---------------------------------------------------------
 
 def compute_fleet_utilization(records):
 
@@ -149,10 +110,7 @@ def compute_fleet_utilization(records):
     return dict(utilization)
 
 
-# ---------------------------------------------------------
 # Revenue by City
-# ---------------------------------------------------------
-
 def compute_revenue_by_city(records):
 
     revenue = defaultdict(int)
@@ -165,9 +123,7 @@ def compute_revenue_by_city(records):
     return dict(revenue)
 
 
-# ---------------------------------------------------------
 # Average Rental Duration
-# ---------------------------------------------------------
 
 def compute_avg_rental_duration(records):
 
@@ -179,9 +135,7 @@ def compute_avg_rental_duration(records):
     return round(total / len(records), 2)
 
 
-# ---------------------------------------------------------
 # Vehicle Usage Frequency
-# ---------------------------------------------------------
 
 def compute_vehicle_usage_frequency(records):
 
@@ -194,10 +148,6 @@ def compute_vehicle_usage_frequency(records):
 
     return dict(freq)
 
-
-# ---------------------------------------------------------
-# Main Transformation Pipeline
-# ---------------------------------------------------------
 
 def transform_all(records):
 

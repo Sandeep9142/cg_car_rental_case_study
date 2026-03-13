@@ -1,24 +1,8 @@
-"""
-Deduplication & Fraud Detection Module
-Developer 4 - Responsible for removing duplicates and detecting suspicious activity.
-
-Features:
-- Remove duplicate reservations by Reservation_ID
-- Detect overlapping bookings for the same vehicle
-- Detect odometer rollback patterns
-- Tag suspicious records with a fraud risk score
-"""
-
 from datetime import datetime
 from collections import defaultdict
 
 
 TS_FORMAT = "%Y-%m-%d %H:%M"
-
-
-# ---------------------------------------------------------
-# Remove duplicate reservations
-# ---------------------------------------------------------
 
 # 7.
 
@@ -39,11 +23,6 @@ def remove_duplicates(records):
             unique.append(record)
 
     return unique, duplicates_count
-
-
-# ---------------------------------------------------------
-# Scenario 12 — Detect overlapping bookings
-# ---------------------------------------------------------
 
 # 12. 
 
@@ -90,10 +69,7 @@ def detect_overlapping_bookings(records):
 
     return flagged
 
-
-# ---------------------------------------------------------
-# Scenario 10 — Detect odometer rollback
-# ---------------------------------------------------------
+# 10.
 
 def detect_odometer_rollback(records):
 
@@ -135,11 +111,7 @@ def detect_odometer_rollback(records):
 
     return flagged
 
-
-# ---------------------------------------------------------
-# Fraud risk scoring
-# ---------------------------------------------------------
-
+# 9
 def compute_fraud_risk(records):
 
     overlap_flagged = detect_overlapping_bookings(records)
@@ -154,7 +126,6 @@ def compute_fraud_risk(records):
 
         res_id = rec.get("Reservation_ID", "")
 
-        # Short rental + huge distance
         try:
 
             pickup_dt = datetime.strptime(str(rec.get("Pickup_TS", "")), TS_FORMAT)
@@ -170,7 +141,6 @@ def compute_fraud_risk(records):
         except:
             pass
 
-        # Overlap risk
         if res_id in overlap_flagged:
 
             rec["Vehicle_Overlap_Flag"] = True
@@ -179,7 +149,6 @@ def compute_fraud_risk(records):
         else:
             rec["Vehicle_Overlap_Flag"] = False
 
-        # Odometer rollback risk
         if res_id in rollback_flagged:
 
             rec["Odometer_Rollback_Flag"] = True
@@ -203,10 +172,6 @@ def compute_fraud_risk(records):
 
     return enriched
 
-
-# ---------------------------------------------------------
-# Main deduplication pipeline
-# ---------------------------------------------------------
 
 def deduplicate_and_flag(records):
 

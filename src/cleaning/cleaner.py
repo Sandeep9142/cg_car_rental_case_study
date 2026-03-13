@@ -1,15 +1,7 @@
-"""
-Data Cleaning Module
-Developer 2 - Responsible for cleaning and normalizing raw car rental data.
-"""
-
 import re
 from datetime import datetime
 
-
-# ---------------------------------------------------------
 # Mappings
-# ---------------------------------------------------------
 
 CITY_MAP = {
     "blr": "Bengaluru",
@@ -38,11 +30,6 @@ TARGET_TS_FORMAT = "%Y-%m-%d %H:%M"
 
 DAMAGE_KEYWORDS = ["scratch", "dent", "damage", "crack", "accident", "broken"]
 
-
-# ---------------------------------------------------------
-# Vehicle ID
-# ---------------------------------------------------------
-
 # 1.
 
 def clean_vehicle_id(value):
@@ -55,11 +42,6 @@ def clean_vehicle_id(value):
     value = value.replace(" ", "-")
 
     return value
-
-
-# ---------------------------------------------------------
-# Timestamp
-# ---------------------------------------------------------
 
 # 2.
 
@@ -106,12 +88,6 @@ def clean_timestamp(value):
 
     return None
 
-
-# ---------------------------------------------------------
-# Odometer
-# ---------------------------------------------------------
-
-
 # 3. 
 
 def clean_odometer(value):
@@ -121,18 +97,12 @@ def clean_odometer(value):
 
     value = str(value)
 
-    # remove km, commas etc
     value = re.sub(r"[^\d\-\.]", "", value)
 
     try:
         return int(float(value))
     except:
         return None
-
-
-# ---------------------------------------------------------
-# Fuel
-# ---------------------------------------------------------
 
 # 4.
 
@@ -157,11 +127,6 @@ def clean_fuel_level(value):
     except:
         return None
 
-
-# ---------------------------------------------------------
-# Rate
-# ---------------------------------------------------------
-
 # 5. 
 
 def clean_rate(value):
@@ -185,11 +150,6 @@ def clean_rate(value):
     except:
         return None
 
-
-# ---------------------------------------------------------
-# City
-# ---------------------------------------------------------
-
 # 6.
 
 def clean_city(value):
@@ -200,11 +160,6 @@ def clean_city(value):
     key = value.strip().lower()
 
     return CITY_MAP.get(key, key.title())
-
-
-# ---------------------------------------------------------
-# Payment
-# ---------------------------------------------------------
 
 # 9.
 
@@ -223,11 +178,6 @@ def clean_payment(value):
 
     return value
 
-
-# ---------------------------------------------------------
-# Driver License Masking
-# ---------------------------------------------------------
-
 # 14.
 
 def mask_driver_license(dl):
@@ -242,11 +192,6 @@ def mask_driver_license(dl):
 
     return dl[:4] + "XXXXXXX"
 
-
-# ---------------------------------------------------------
-# GPS smoothing
-# ---------------------------------------------------------
-
 # 16.
 
 def smooth_gps(value):
@@ -256,10 +201,6 @@ def smooth_gps(value):
     except:
         return None
 
-
-# ---------------------------------------------------------
-# Speed normalization
-# ---------------------------------------------------------
 
 # 17.
 
@@ -278,10 +219,6 @@ def normalize_speed(value):
         return None
 
 
-# ---------------------------------------------------------
-# PII Redaction
-# ---------------------------------------------------------
-
 # 18.
 
 def redact_pii(text):
@@ -293,11 +230,6 @@ def redact_pii(text):
     text = re.sub(r'\S+@\S+', '[EMAIL]', text)
 
     return text
-
-
-# ---------------------------------------------------------
-# Damage detection
-# ---------------------------------------------------------
 
 #13. 
 
@@ -314,10 +246,6 @@ def detect_damage(notes):
 
     return False
 
-
-# ---------------------------------------------------------
-# Record Cleaning
-# ---------------------------------------------------------
 
 def clean_record(record):
 
@@ -356,10 +284,6 @@ def clean_record(record):
 
     return cleaned
 
-
-# ---------------------------------------------------------
-# Clean All
-# ---------------------------------------------------------
 
 def clean_all(records):
 

@@ -39,7 +39,6 @@ class AnalyticalEngine:
    # Repositioning analytics
     def repositioning_distance(self):
 
-        # convert lat/lon to numeric
         self.df["Pickup_Lat"] = pd.to_numeric(self.df["Pickup_Lat"], errors="coerce")
         self.df["Pickup_Lon"] = pd.to_numeric(self.df["Pickup_Lon"], errors="coerce")
         self.df["Drop_Lat"] = pd.to_numeric(self.df["Drop_Lat"], errors="coerce")
@@ -50,7 +49,6 @@ class AnalyticalEngine:
         self.df["Prev_Drop_Lat"] = self.df.groupby("Vehicle_ID")["Drop_Lat"].shift()
         self.df["Prev_Drop_Lon"] = self.df.groupby("Vehicle_ID")["Drop_Lon"].shift()
 
-        # calculate reposition distance
         self.df["Reposition_Distance"] = (
             (self.df["Pickup_Lat"] - self.df["Prev_Drop_Lat"])**2 +
             (self.df["Pickup_Lon"] - self.df["Prev_Drop_Lon"])**2
@@ -170,9 +168,8 @@ class AnalyticalEngine:
     #11. Overstay detection and penalty calculation.
     def overstay_detection(self):
         planned_hours = 8
-        penalty_rate_per_hour = 10  # example, you can change
+        penalty_rate_per_hour = 10  
 
-        # Calculate overstay minutes
         self.df["Overstay_Minutes"] = np.where(
             self.df["Rental_Hours"] > planned_hours,
             (self.df["Rental_Hours"] - planned_hours) * 60,
@@ -191,29 +188,23 @@ class AnalyticalEngine:
     # 12. Pickup/Return punctuality stats
     def pickup_punctuality(self):
 
-        # Convert timestamps
         self.df["Pickup_TS"] = pd.to_datetime(self.df["Pickup_TS"])
         self.df["Return_TS"] = pd.to_datetime(self.df["Return_TS"])
 
-        # Planned return time = Pickup_TS + Rental_Hours
         self.df["Planned_Return_TS"] = self.df["Pickup_TS"] + pd.to_timedelta(self.df["Rental_Hours"], unit="h")
 
-        # Pickup delay: assume 0 if no separate planned pickup, else 0 for demonstration
-        self.df["Pickup_Delay"] = 0  # placeholder since dataset has no planned pickup
+        self.df["Pickup_Delay"] = 0  
 
-        # Return delay in minutes
         self.df["Return_Delay_Min"] = (self.df["Return_TS"] - self.df["Planned_Return_TS"]).dt.total_seconds() / 60
 
-        # Compute punctuality stats
         self.avg_return_delay = round(self.df["Return_Delay_Min"].mean(), 2)
-        self.on_time_returns = round((self.df["Return_Delay_Min"] <= 0).mean() * 100, 2)  # % on-time or early
+        self.on_time_returns = round((self.df["Return_Delay_Min"] <= 0).mean() * 100, 2)  
 
         return self.df
 
     # 13. Geo heatmap hotspots
     def geo_hotspots(self):
 
-        # pickup hotspots
         pickup_counts = (
             self.df
             .groupby(["Pickup_Lat","Pickup_Lon"])
@@ -221,7 +212,6 @@ class AnalyticalEngine:
             .reset_index(name="Pickup_Hotspot")
         )
 
-        # drop hotspots
         drop_counts = (
             self.df
             .groupby(["Drop_Lat","Drop_Lon"])
@@ -229,7 +219,6 @@ class AnalyticalEngine:
             .reset_index(name="Drop_Hotspot")
         )
 
-        # merge back
         self.df = self.df.merge(
             pickup_counts,
             on=["Pickup_Lat","Pickup_Lon"],
@@ -260,14 +249,12 @@ class AnalyticalEngine:
   # 15. Cancellation rate and reasons analysis
     def cancellation_rate(self):
 
-        # cancellation flag
         self.df["Cancelled"] = np.random.choice(
             [0,1],
             len(self.df),
             p=[0.9,0.1]
         )
 
-        # cancellation reasons
         reasons = [
             "Customer Cancelled",
             "Vehicle Unavailable",
@@ -289,10 +276,8 @@ class AnalyticalEngine:
 
         score = 100
 
-        # convert columns to numeric
         self.df["Harsh_Events"] = pd.to_numeric(self.df["Harsh_Events"], errors="coerce")
         
-        # remove "kmh" text then convert
         self.df["Max_Speed_kmh"] = (
             self.df["Max_Speed_kmh"]
             .astype(str)
@@ -303,12 +288,10 @@ class AnalyticalEngine:
 
         self.df["Damage_Flag"] = pd.to_numeric(self.df["Damage_Flag"], errors="coerce")
 
-        # penalties
         harsh_penalty = self.df["Harsh_Events"] * 2
         speed_penalty = np.where(self.df["Max_Speed_kmh"] > 120, 10, 0)
         damage_penalty = self.df["Damage_Flag"] * 20
 
-        # final score
         self.df["Driver_Score"] = score - harsh_penalty - speed_penalty - damage_penalty
 
         return self.df
@@ -328,19 +311,15 @@ class AnalyticalEngine:
     # 18. Lead-time price elasticity features
     def price_elasticity(self):
 
-        # convert timestamps
         self.df["Pickup_TS"] = pd.to_datetime(self.df["Pickup_TS"], errors="coerce")
         self.df["Booking_TS"] = pd.to_datetime(self.df["Booking_TS"], errors="coerce")
 
-        # calculate lead time (hours)
         self.df["Lead_Time"] = (
             self.df["Pickup_TS"] - self.df["Booking_TS"]
         ).dt.total_seconds() / 3600
 
-        # ensure rate numeric
         self.df["Rate"] = pd.to_numeric(self.df["Rate"], errors="coerce")
 
-        # elasticity feature
         self.df["Elasticity_Feature"] = self.df["Lead_Time"] * self.df["Rate"]
 
         return self.df
@@ -379,7 +358,6 @@ class AnalyticalEngine:
 
         return self.df
 
-    # Run all analytics
     def run_all(self):
 
         self.compute_utilization()
