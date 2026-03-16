@@ -77,7 +77,7 @@ class AnalyticalEngine:
    # 7. Damage incidence rate
     def damage_rate(self):
 
-        self.df["Damage_Flag"] = np.where(self.df["Fuel_Level"] < 20, 1, 0)
+        self.df["Damage_Flag"] = np.where(self.df["Fuel_Level"] < 0.2, 1, 0)
 
         return self.df
 
@@ -102,8 +102,15 @@ class AnalyticalEngine:
 
         self.df["Pickup_TS"] = pd.to_datetime(self.df["Pickup_TS"])
 
-        # customer first rental month
-        self.df["Cohort_Month"] = self.df.groupby("Driver_License")["Pickup_TS"].transform("min").dt.to_period("M")
+        # remove invalid customers
+        self.df = self.df.dropna(subset=["Driver_License"])
+
+        # first rental month
+        self.df["Cohort_Month"] = (
+            self.df.groupby("Driver_License")["Pickup_TS"]
+            .transform("min")
+            .dt.to_period("M")
+        )
 
         # activity month
         self.df["Activity_Month"] = self.df["Pickup_TS"].dt.to_period("M")
@@ -115,6 +122,7 @@ class AnalyticalEngine:
         )
 
         return self.df
+
     
 
     def nps_rollups(self):
@@ -137,8 +145,9 @@ class AnalyticalEngine:
     # 9. Fraud risk score
     def fraud_risk(self):
         self.df["Fraud_Risk_Score"] = np.where(
-            (self.df["Distance_km"] < 5) |
-            (self.df["Odo_End"] < self.df["Odo_Start"]),
+            (self.df["Distance_km"] < 500) |
+            (self.df["Odo_End"] < self.df["Odo_Start"]) |
+            (self.df["Rental_Hours"] > 72),
             80,
             10
         )
@@ -271,13 +280,23 @@ class AnalyticalEngine:
 
         return self.df
 
-  # 16. Driver behavior scoring from telematics
     def driver_behavior(self):
 
         score = 100
 
+        # ensure required columns exist
+        if "Harsh_Events" not in self.df.columns:
+            self.df["Harsh_Events"] = 0
+
+        if "Max_Speed_kmh" not in self.df.columns:
+            self.df["Max_Speed_kmh"] = 80
+
+        if "Damage_Flag" not in self.df.columns:
+            self.df["Damage_Flag"] = 0
+
+        # convert to numeric
         self.df["Harsh_Events"] = pd.to_numeric(self.df["Harsh_Events"], errors="coerce")
-        
+
         self.df["Max_Speed_kmh"] = (
             self.df["Max_Speed_kmh"]
             .astype(str)
@@ -288,10 +307,12 @@ class AnalyticalEngine:
 
         self.df["Damage_Flag"] = pd.to_numeric(self.df["Damage_Flag"], errors="coerce")
 
+        # penalties
         harsh_penalty = self.df["Harsh_Events"] * 2
         speed_penalty = np.where(self.df["Max_Speed_kmh"] > 120, 10, 0)
         damage_penalty = self.df["Damage_Flag"] * 20
 
+        # final score
         self.df["Driver_Score"] = score - harsh_penalty - speed_penalty - damage_penalty
 
         return self.df

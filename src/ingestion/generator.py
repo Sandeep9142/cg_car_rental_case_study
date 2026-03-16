@@ -45,15 +45,28 @@ PAYMENT_VARIANTS = ["UPI","upi","Card","card","cash","wallet"]
 
 BASE_DATE = datetime(2026,1,1)
 
-def random_timestamp():
 
-    dt = BASE_DATE + timedelta(
-        days=random.randint(0,90),
-        hours=random.randint(0,23),
-        minutes=random.randint(0,59)
-    )
+def random_timestamp(existing_bookings=None):
 
-    formats=[
+    # 30% chance to create overlap
+    if existing_bookings and random.random() < 0.10:
+
+        start, end = random.choice(existing_bookings)
+
+        overlap_time = start + timedelta(
+            minutes=random.randint(1, int((end-start).total_seconds()/60) - 1)
+        )
+
+        dt = overlap_time
+
+    else:
+        dt = BASE_DATE + timedelta(
+            days=random.randint(0,90),
+            hours=random.randint(0,23),
+            minutes=random.randint(0,59)
+        )
+
+    formats = [
         "%Y/%m/%d %H:%M",
         "%Y-%m-%d %H:%M",
         "%d-%m-%Y %H:%M",
@@ -63,11 +76,11 @@ def random_timestamp():
 
     ts = dt.strftime(random.choice(formats))
 
+    # 4% invalid minutes for cleaning scenario
     if random.random() < 0.04:
-        ts = re.sub(r":\d\d",f":{random.randint(60,99)}",ts)
+        ts = re.sub(r":\d\d", f":{random.randint(60,99)}", ts)
 
     return dt, ts
-
 
 def dirty_vehicle(vehicle):
 
@@ -118,11 +131,14 @@ def dirty_rate(rate):
     return random.choice(templates)
 
 
-def generate_reservations(n=2000):
+num_records = 7000
+seed = 42
+
+def generate_reservations(num_records, seed):
 
     rows=[]
 
-    for i in range(n):
+    for i in range(num_records):
 
         res_id=f"RES-{str(i+1).zfill(5)}"
 
@@ -265,29 +281,31 @@ def merge_datasets():
     merged=res.merge(tel,on="Reservation_ID").merge(bill,on="Reservation_ID")
 
     merged["Driver_License"]=[
-    random.choice(["","DL12345","INVALID"]) for _ in range(len(merged))
+    random.choice(["DL90871", "DL67543","DL12345","INVALID"]) for _ in range(len(merged))
     ]
 
     merged["Notes"]=[
-    random.choice(["scratch on door","Contact Rahul 9876543210",""])
+    random.choice(["scratch on door","Contact Rahul 9876543210","Bad Seats Quality", "Scratch on windows", "Speakers not working"])
     for _ in range(len(merged))
     ]
 
     merged["Customer_Feedback"]=[
-    random.choice(["good service","email test@gmail.com",""])
+    random.choice(["good service","email test@gmail.com","Good speaker", "Good mileage", "Smooth going"])
     for _ in range(len(merged))
     ]
 
-    duplicates = merged.sample(80, replace=True)
+    duplicate_count = int(len(merged) * 0.04)   # 4% duplicates
+    duplicates = merged.sample(duplicate_count, replace=True)
+
     merged = pd.concat([merged, duplicates], ignore_index=True)
 
     merged.to_csv(FINAL_FILE,index=False)
 
 
 
-def generate_all():
+def generate_all(num_records, seed):
 
-    reservations = generate_reservations()
+    reservations = generate_reservations(num_records, seed)
 
     res_ids = [r["Reservation_ID"] for r in reservations]
 
@@ -300,11 +318,11 @@ def generate_all():
 
     merge_datasets()
 
-    return 2000 + 80
+    return num_records
 
 
 if __name__=="__main__":
 
-    count=generate_all()
+    count=generate_all(num_records=7000)
 
     print("Datasets generated:",count)

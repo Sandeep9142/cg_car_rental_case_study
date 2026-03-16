@@ -71,38 +71,34 @@ df = pd.DataFrame(records)
 engine = AnalyticalEngine(df)
 
 
-# -------------------------------------------------
-print("1️⃣ Utilization calculation")
+print("1. Utilization calculation")
 print(engine.compute_utilization())
 print()
 
-# -------------------------------------------------
-print("2️⃣ RevPAC calculation")
+
+print("2. RevPAC calculation")
 print(engine.compute_revpac())
 print()
 
-# -------------------------------------------------
-print("3️⃣ Distance & Cost per km")
+
+print("3. Distance & Cost per km")
 print(engine.compute_distance_cost())
 print()
 
-# -------------------------------------------------
-print("4️⃣ Idle time calculation")
+print("4. Idle time calculation")
 print(engine.compute_idle_time())
 print()
 
-# -------------------------------------------------
-print("5️⃣ Dynamic pricing features")
+print("5. Dynamic pricing features")
 print(engine.dynamic_pricing_features())
 print()
 
-# -------------------------------------------------
-print("6️⃣ Fuel efficiency estimation")
+print("6. Fuel efficiency estimation")
 print(engine.fuel_efficiency())
 print()
 
-# -------------------------------------------------
-print("7️⃣ Damage rate calculation")
+
+print("7. Damage rate calculation")
 print(engine.damage_rate())
 print()
 
@@ -111,69 +107,61 @@ damage_rate = engine.damage_incidence_rate()
 print(f"Damage incidents per 100 rentals: {damage_rate:.2f}")
 print()
 
-# -------------------------------------------------
-print("8️⃣ Customer cohort retention tagging")
+print("8. Customer cohort retention tagging")
 print(engine.cohort_retention())
 print()
 
-# -------------------------------------------------
-print("9️⃣ Fraud risk scoring")
+print("9. Fraud risk scoring")
 print(engine.fraud_risk())
 print()
 
-# -------------------------------------------------
-print("🔟 Maintenance due forecast")
+print("10. Maintenance due forecast")
 print(engine.maintenance_due())
 print()
 
-# -------------------------------------------------
-print("11️⃣ Overstay detection & penalty")
+print("11. Overstay detection & penalty")
 print(engine.overstay_detection())
 print()
 
-# -------------------------------------------------
-print("12️⃣ Pickup / Return punctuality stats")
+print("12. Pickup / Return punctuality stats")
 engine.pickup_punctuality()
 print(engine.df[["Pickup_Delay", "Return_Delay_Min"]])
 print()
 
-# -------------------------------------------------
-print("13️⃣ Geo hotspot score")
+
+print("13. Geo hotspot score")
 print(engine.geo_hotspots())
 print()
 
-# -------------------------------------------------
-print("14️⃣ Upsell opportunity flags")
+print("14. Upsell opportunity flags")
 print(engine.upsell_flags())
 print()
 
-# -------------------------------------------------
-print("15️⃣ Cancellation rate simulation")
+print("15. Cancellation rate simulation")
 print(engine.cancellation_rate())
 print()
 
-# -------------------------------------------------
-print("16️⃣ Driver behavior score")
+
+print("16. Driver behavior score")
 print(engine.driver_behavior())
 print()
 
-# -------------------------------------------------
-print("17️⃣ Vehicle class mix optimization")
+print("17. Vehicle class mix optimization")
 print(engine.vehicle_mix())
 print()
 
-# -------------------------------------------------
-print("18️⃣ Lead time price elasticity features")
+
+print("18. Lead time price elasticity features")
 print(engine.price_elasticity())
 print()
 
-# -------------------------------------------------
-print("19️⃣ Fleet health score")
+
+print("19. Fleet health score")
 print(engine.fleet_health())
 print()
 
-# -------------------------------------------------
-print("20️⃣ Churn likelihood prediction")
+
+print("20. Churn likelihood prediction")
 print(engine.churn_prediction())
 print()
 

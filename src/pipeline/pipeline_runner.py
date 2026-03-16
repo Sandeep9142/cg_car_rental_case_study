@@ -37,6 +37,7 @@ CLEANED_FIELDS = [
     "Maintenance_Due",
     "Overstay_Minutes",
     "Pickup_Delay",
+    "Driver_License",
     "Driver_Score",
     "Fleet_Health_Score",
     "Churn_Risk",

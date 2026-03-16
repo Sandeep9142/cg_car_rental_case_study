@@ -192,6 +192,21 @@ def mask_driver_license(dl):
 
     return dl[:4] + "XXXXXXX"
 
+# import pandas as pd
+
+# def mask_driver_license(dl):
+
+#     # Handle missing values
+#     if pd.isna(dl):
+#         return None
+
+#     dl = str(dl).strip()
+
+#     if len(dl) < 6:
+#         return dl
+
+#     return dl[:4] + "XXXXXXX"
+
 # 16.
 
 def smooth_gps(value):
@@ -221,12 +236,20 @@ def normalize_speed(value):
 
 # 18.
 
+import pandas as pd
+
 def redact_pii(text):
 
-    if not text:
+    # Handle missing values safely
+    if pd.isna(text):
         return text
 
+    text = str(text)
+
+    # Replace phone numbers
     text = re.sub(r'\b\d{10}\b', '[PHONE]', text)
+
+    # Replace emails
     text = re.sub(r'\S+@\S+', '[EMAIL]', text)
 
     return text
@@ -235,7 +258,7 @@ def redact_pii(text):
 
 def detect_damage(notes):
 
-    if not notes:
+    if not isinstance(notes, str):
         return False
 
     notes = notes.lower()
